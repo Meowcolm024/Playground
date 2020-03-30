@@ -1,0 +1,4 @@
+/Haskell/*.o
+/Haskell/*.hi
+/.vscode
+a.out
