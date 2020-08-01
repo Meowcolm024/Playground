@@ -1,6 +1,6 @@
 data List a = Nil | Cons a (List a) deriving (Eq)
 
-instance (Show a ) => Show (List a) where
+instance (Show a) => Show (List a) where
     show Nil         = "Nil :)"
     show (Cons x xs) = show x ++ " - " ++ show xs
 

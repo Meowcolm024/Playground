@@ -2,3 +2,4 @@
 /Haskell/*.hi
 /.vscode
 a.out
+/Others/*.ibc
