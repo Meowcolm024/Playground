@@ -1,0 +1,17 @@
+(define (scale-tree tree factor)
+    (map (lambda (sub-tree)
+        (if (pair? sub-tree)
+            (scale-tree sub-tree factor)
+            (* sub-tree factor)))
+    tree)
+)
+
+(define (map-tree fun tree)
+    (map (lambda (sub-tree)
+        (if (pair? sub-tree)
+        (map-tree fun sub-tree)
+        (fun sub-tree)))
+    tree)
+)
+
+(define test (list (list 1 2) (list (list 4 5) 6)))

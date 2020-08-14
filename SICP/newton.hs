@@ -17,4 +17,4 @@ loop n f x = loop (n-1) f (f x)
 
 zero = iterNt log
 
-newton f = fix (newton f)
+ 
