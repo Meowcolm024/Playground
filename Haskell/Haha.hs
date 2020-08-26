@@ -19,3 +19,10 @@ fib 2 = 1
 fib n = fib (n-1) + fib (n-2)
 
 fibs = 1 : 1 : zipWith (+) fibs (tail fibs)
+
+qsort :: Ord a => [a] -> [a]
+qsort [] = []
+qsort (x:xs) = qsort left ++ [x] ++ qsort right
+    where
+        left = filter (<=x) xs
+        right = filter (>x) xs
