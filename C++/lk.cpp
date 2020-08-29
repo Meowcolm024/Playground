@@ -76,6 +76,37 @@ lk<T> *assign(T *a, T *b)
     return tmp;
 }
 
+template <class T>
+T select(int i, lk<T> *ls)
+{
+    if (!ls)
+        return 0;
+    if (i == 0)
+        return (ls->val);
+    return select(i - 1, ls->next);
+}
+
+template <class T>
+lk<T> *drop(int i, lk<T> *ls)
+{
+    if (!ls)
+        return 0;
+    if (i == 0)
+        return ls;
+    return drop(i - 1, ls->next);
+}
+
+template <class T>
+lk<T> *take(int i, lk<T> *ls)
+{
+    if (i == 0 || !ls)
+        return 0;
+    lk<T> *b = new lk<T>;
+    b->val = ls->val;
+    b->next = take(i - 1, ls->next);
+    return b;
+}
+
 int main()
 {
     int hello[] = {1, 2, 3, 4, 5};
@@ -83,5 +114,8 @@ int main()
     printlk(map<int, int>([](int a) -> int { return a + 1; }, x));
     printlk(filter<int>([](int a) -> bool { return a > 3; }, x));
     cout << fold<int, int>([](int a, int b) -> int { return a + b; }, 0, x) << endl;
+    cout << select(3, x) << endl;
+    printlk(take(3, x));
+    printlk(drop(1, x));
     return 0;
 }
