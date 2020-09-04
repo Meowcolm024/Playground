@@ -26,3 +26,7 @@ qsort (x:xs) = qsort left ++ [x] ++ qsort right
     where
         left = filter (<=x) xs
         right = filter (>x) xs
+
+-- >>> x1
+x1 :: [Integer]
+x1 = [1..3]

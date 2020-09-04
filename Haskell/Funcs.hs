@@ -1,9 +1,8 @@
-
 primes :: [Integer]
-primes = 2 : filter (`isp` primes) [3..]
+primes = 2 : filter isPrime [3 ..]
 
-isp :: Integer -> [Integer] -> Bool
-isp n = foldr (\x acc -> (x ^ 2 > n) || (n `mod` x /= 0 && acc)) False
+isPrime :: Integer -> Bool
+isPrime n = foldr (\x acc -> (x ^ 2 > n) || (n `mod` x /= 0 && acc)) False primes
 
 fib :: [Integer]
 fib = 0 : 1 : zipWith (+) fib (tail fib)
