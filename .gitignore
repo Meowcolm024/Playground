@@ -1,5 +1,7 @@
 /Haskell/*.o
 /Haskell/*.hi
+/Haskell/*.out
 /.vscode
 a.out
+/C++/a.*
 /Others/*.ibc
