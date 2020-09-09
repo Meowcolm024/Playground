@@ -2,7 +2,7 @@
 
 using namespace std;
 
-void merge_sort(int xs[], int left, int right) {
+void merge(int *xs, int x, int y) {
     
 }
 
