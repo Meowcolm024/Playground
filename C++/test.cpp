@@ -1,14 +1,17 @@
-#include "fp.hpp"
 #include <iostream>
-#include <vector>
-
 using namespace std;
 
+void swap(int &x, int &y) {
+    int tmp = x;
+    x = y;
+    y = tmp;
+}
+
 int main() {
-    vector<int> a(5);
     int xs[] = {1,2,3,4,5};
+    swap(xs[1], xs[3]);
     for (auto i : xs)
-        a.push_back(i);
-    cout << a.size() << endl;
+        cout << i << " ";
+    cout << endl;
     return 0;
 }
