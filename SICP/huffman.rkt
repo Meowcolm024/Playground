@@ -8,7 +8,7 @@
 
 (define weight-leaf caddr)
 
-(define (make-code left right)
+(define (make-code-tree left right)
     (list left
         right
         (append (symbols left) (symbols right))
@@ -42,3 +42,23 @@
     (cond ((= bit 0) (left-branch branch))
         ((= bit 1) (right-branch branch))
         (else (error "bad bit: " bit))))
+
+(define (adjoin-set x set)
+    (cond ((null? set) (list x))
+        ((< (weight x) weight (car set)) (cons x set))
+        (else (cons (car set) (adjoin-set x (cdr set))))))
+
+(define (make-leaf-set pairs)
+    (if (null? set)
+        '()
+        (let ((pair (car pairs)))
+            (adjoin-set 
+                (make-leaf-set (car pair) (cadr pair))
+                (make-leaf-set (cdr pairs))))))
+
+(define sample-tree
+    (make-code-tree (make-leaf 'A 4)
+        (make-code-tree (make-leaf 'B 2)
+            (make-code-tree (make-leaf 'D 1) (make-leaf 'C 1)))))
+
+(define sample-msg '(0 1 1 0 0 1 0 1 0 1 1 1 0))
