@@ -7,7 +7,7 @@ struct Func
     string name;
 };
 
-function<double(Func)> complex(double x, double y)
+function<double(Func)> complex_num(double x, double y)
 {
     return [x, y](Func op) {
         string tmp = op.name;
@@ -29,7 +29,7 @@ Func angle = {"angle"};
 
 int main()
 {
-    auto c1 = complex(1, 2);
+    auto c1 = complex_num(1, 2);
     cout << "complex number: " << c1(real_part) << "+" << c1(imag_part) << "i\n";
     cout << "magnitude: " << c1(magnitude) << endl;
     cout << "angle: " << c1(angle) << endl;
