@@ -1,25 +1,28 @@
 #include <iostream>
 using namespace std;
 
-int my_true(int x, int y)
+template<class T, class F>
+T my_true(T x, F y)
 {
     return x;
 }
 
-int my_false(int x, int y)
+template<class T, class F>
+F my_false(T x, F y)
 {
     return y;
 }
 
-int my_if(function<int(int, int)> p, int a, int b)
+template<class T>
+T my_if(T p)
 {
-    return p(a,b);
+    return p;
 }
 
 int main()
 {
-    int x = my_if(my_true, 1, 2);
-    int y = my_if(my_false, 1, 2);
+    int x = my_if(my_true<int, int>)(1, 2);
+    string y = my_if(my_false<int, string>)(1, "hello");
     cout << x << " " << y << endl;
     return 0;
 }
