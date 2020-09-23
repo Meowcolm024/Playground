@@ -2,7 +2,7 @@
 module Monads where
 
 import Prelude hiding (Monad, Identity, Maybe(..), State, Reader, Writer)
-import Data.Monoid
+-- import Data.Monoid
 
 class Monad m where
   return :: a -> m a
