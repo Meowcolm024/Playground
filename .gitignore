@@ -2,7 +2,7 @@
 /Haskell/*.hi
 /Haskell/*.out
 /.vscode
-a.out
+*.out
 /C++/a.*
 /Others/*.ibc
 *.aes
