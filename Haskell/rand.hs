@@ -1,3 +1,4 @@
+{-# LANGUAGE MonadComprehensions#-}
 import Control.Monad
 import Control.Monad.IO.Class
 import Control.Monad.Trans.Class
@@ -13,10 +14,7 @@ rollDice :: Int -> [Int]
 rollDice = flip evalState (mkStdGen 0) . flip replicateM rollDie
 
 getP :: MaybeT IO String
-getP = do
-  s <- lift getLine
-  guard (isValid s)
-  return s
+getP = [s | s <- lift getLine, isValid s]
 
 isValid :: String -> Bool
 isValid = all isDigit
