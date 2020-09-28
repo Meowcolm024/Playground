@@ -8,7 +8,7 @@ int main()
     {
         bool is_prime = true;
         int j = 2;
-        while (j < i)
+        while (j*j <= i)
         {
             if (i % j == 0)
             {

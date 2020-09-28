@@ -1,6 +1,6 @@
 #include <iostream>
 using namespace std;
-const int64_t MAX = 1e7;
+const int64_t MAX = 1e8;
 bool ps[MAX];
 
 int main()
