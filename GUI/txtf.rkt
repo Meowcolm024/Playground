@@ -24,13 +24,13 @@
                         (init-value "Field")))
 
 
-(define btn-one (new button%
+(define btn-add (new button%
                     (parent btn-panel)
                     (label "Add text")
                     [callback (lambda (button event)
                          (send text insert (string-append (send text-field get-value) "\n")))]))
 
-(define btn-two (new button%
+(define btn-clean (new button%
                     (parent btn-panel)
                     (label "Clean")
                     [callback (lambda (button event)
