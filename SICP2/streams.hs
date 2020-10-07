@@ -27,3 +27,7 @@ tableu t s = s : tableu t (t s)
 accseq :: ([b] -> [b]) -> [b] -> [b]
 accseq t s = map head (tableu t s)
 
+{- 
+pairs :: [[(Integer, Integer)]]
+pairs = [[(x, y) | y <- [x..]] | x <- [1..]]
+ -}
