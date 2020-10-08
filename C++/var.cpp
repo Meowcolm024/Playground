@@ -20,7 +20,7 @@ void show_either(Either<a, b> x) {
 };
 
 int main() {
-    Either<int, char[]> x;
+    Either<int, char> x;
     x.cat = Left;
     x.val.left = 1;
     show_either(x);
