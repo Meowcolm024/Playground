@@ -1,3 +1,4 @@
+{-# LANGUAGE TupleSections #-}
 import Data.List (inits)
 
 fibgen :: Integer -> Integer -> [Integer]
@@ -27,7 +28,9 @@ tableu t s = s : tableu t (t s)
 accseq :: ([b] -> [b]) -> [b] -> [b]
 accseq t s = map head (tableu t s)
 
-{- 
-pairs :: [[(Integer, Integer)]]
-pairs = [[(x, y) | y <- [x..]] | x <- [1..]]
- -}
+interleave :: [a] -> [a] -> [a]
+interleave [] s = s
+interleave (x : xs) y = x : interleave y xs
+
+pairs :: [Int] -> [Int] -> [(Int, Int)]
+pairs (s : ss) (t : ts) = (s, t) : interleave (map (s,) ts) (pairs ss ts)
