@@ -1,4 +1,5 @@
 {-# LANGUAGE TupleSections #-}
+
 import Data.List (inits)
 
 fibgen :: Integer -> Integer -> [Integer]
@@ -34,3 +35,12 @@ interleave (x : xs) y = x : interleave y xs
 
 pairs :: [Int] -> [Int] -> [(Int, Int)]
 pairs (s : ss) (t : ts) = (s, t) : interleave (map (s,) ts) (pairs ss ts)
+
+integral :: Num a => [a] -> a -> a -> [a]
+integral input c dt = let i = c : zipWith (+) (map (* dt) input) i in i
+
+solve :: Num a => (a -> a) -> a -> a -> [a]
+solve f y0 dt = y
+  where
+    y = integral dy y0 dt
+    dy = map f y
