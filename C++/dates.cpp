@@ -50,8 +50,33 @@ int date_delta(Date d1, Date d2)
 
 int main()
 {
-    Date a1 = {2001, 11, 14};
-    Date a2 = {2020, 10, 1};
-    cout << date_delta(a2, a1) << endl;
+    string str_ymd[2];
+    cout << "Input a date: ";
+    cin >> str_ymd[0];
+    cout << "Input another date: ";
+    cin >> str_ymd[1];
+
+    int ymd[2][8];
+    for (int i = 0; i < 2; i++)
+        for (int j = 0; j < 8; j++)
+            ymd[i][j] = int(str_ymd[i][j]) - 48;
+
+    Date dates[2];
+    for (int i = 0; i < 2; i++)
+    {
+        int y = 0;
+        for (int p = 0; p < 4; p++)
+            y += ymd[i][p] * pow(10, (3 - p));
+        int m = 0, d = 0;
+        for (int p = 4; p < 6; p++)
+        {
+            m += ymd[i][p] * pow(10, (5 - p));
+            d += ymd[i][p + 2] * pow(10, (5 - p));
+        }
+        dates[i] = {y, m, d};
+    }
+
+    cout << date_delta(dates[1], dates[0]) << endl;
+
     return 0;
 }
