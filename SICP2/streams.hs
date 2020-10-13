@@ -44,3 +44,6 @@ solve f y0 dt = y
   where
     y = integral dy y0 dt
     dy = map f y
+
+withdraw :: Num t => t -> [t] -> [t]
+withdraw b (s:ss) = b : withdraw (b-s) ss
