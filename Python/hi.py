@@ -1,19 +1,8 @@
-def hi_1(val : (int, int)):
-    if val[0] == 1:
-        print("hi left")
-    if val[1] == 1:
-        print("hi right")
+x = [1,2,3,4,5]
 
-def hi_2(val: (int, int)):
-    if val[0] == 1:
-        print("hi left")
-    elif val[1] == 1:
-        print("hi right")
-
-hi_1((1,1))
-print("--------")
-hi_1((1,2))
-print("--------")
-hi_2((1,1))
-print("--------")
-hi_2((1,2))
+for i in range(0, len(x)-1):
+    if x[i] == 6:
+        print(i)
+        break
+else:
+    print(-1)

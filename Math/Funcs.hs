@@ -27,8 +27,8 @@ isPrime n = foldr (\x acc -> (x*x > n) || (n `rem` x /= 0 && acc)) False primes
 -- | fibs
 -- 
 -- > fibs == [0, 1, 1, 2, 3, 5, 8, ...
-fib :: [Int]
-fib = 0 : 1 : zipWith (+) fib (tail fib)
+fibs :: [Int]
+fibs = 0 : 1 : zipWith (+) fib (tail fib)
 
 -- | Factorial
 --
