@@ -5,35 +5,38 @@
 
 using namespace std;
 
-const long MAX = 1e7;
+const long MAX = 1e8;
 long chance1 = 0;
 long chance2 = 0;
 
 void test(long &chance)
 {
-    // srand(time(NULL));
+    srand(time(NULL));
     for (int i = 0; i < MAX; i++)
     {
-        int acc[] = {0, 0, 0};
-        for (int j = 0; j < 30; j++)
+        bool acc[10];
+        for (int j = 0; j < 10; j++)
+            acc[j] = true;
+        for (int j = 0; j < 20; j++)
         {
-            int x = rand() % 20;
-            if (x < 3)
+            int x = rand() % 10;
+            acc[x] = false;
+        }
+        for (bool a : acc)
+        {
+            if (a)
             {
-                acc[x]++;
+                // cout << i << endl;
+                chance++;
+                break;
             }
         }
-        int t = 0;
-        for (int a : acc)
-            t += a;
-        if (t == 0)
-            chance++;
     }
 }
 
 int main()
 {
-    srand(time(NULL));
+    // srand(time(NULL));
 
     thread t1(test, ref(chance1));
     thread t2(test, ref(chance2));
@@ -41,6 +44,7 @@ int main()
     t1.join();
     t2.join();
 
+    // test(chance1);
 
     cout << chance1 << " " << chance2 << endl;
 
