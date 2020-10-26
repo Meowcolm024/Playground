@@ -1,4 +1,5 @@
 import Math.Funcs
+import Data.Ratio
 
 f :: Integral a => a -> a -> a
 f m n = sum [comb m i * comb (n-1) (i-1) | i <- [1 .. n]]
@@ -14,3 +15,9 @@ g2 (p,q) = sum [comb p (k+1) * comb q k | k <- [0..q]]
 
 testEq :: Integer -> Bool
 testEq m = let t = testData m in map g1 t == map g2 t
+
+calc :: Integer -> Integer -> Integer
+calc x y = sum [(-1)^k * comb y k * (y-k) ^ x | k <- [0..y]]
+
+prob :: Integer -> Integer -> Ratio Integer
+prob x y = calc x y % y ^ x
