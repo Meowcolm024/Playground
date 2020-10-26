@@ -1,8 +1,15 @@
-x = [1,2,3,4,5]
+import random
 
-for i in range(0, len(x)-1):
-    if x[i] == 6:
-        print(i)
-        break
-else:
-    print(-1)
+MAXRUN = 10000000
+chance = 0
+
+for i in range(MAXRUN):
+    acc = [0,0,0]
+    for j in range(30):
+        x = random.randint(1,20)
+        if x in [1,2,3]:
+            acc[x-1]+=1
+    if sum(acc) == 0:
+        chance += 1
+
+print(chance/MAXRUN)
