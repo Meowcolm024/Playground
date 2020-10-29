@@ -19,5 +19,8 @@ testEq m = let t = testData m in map g1 t == map g2 t
 calc :: Integer -> Integer -> Integer
 calc x y = sum [(-1)^k * comb y k * (y-k) ^ x | k <- [0..y]]
 
+calc' :: Integer -> Integer -> Integer
+calc' x y = sigma 0 y (\k -> (-1)^k * comb y k * (y-k) ^ x)
+
 prob :: Integer -> Integer -> Ratio Integer
 prob x y = calc x y % y ^ x

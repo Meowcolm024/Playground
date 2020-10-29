@@ -37,3 +37,10 @@ fibs = 0 : 1 : zipWith (+) fibs (tail fibs)
 fact :: Integral a => a -> a
 fact 0 = 1
 fact n = product [1..n]
+
+-- | Big sigma to get sum
+--
+-- > sigma 1 10 id = 1 + 2 + 3 .. + 10 = 55
+-- > sigma 2 4 (\x -> x^2) = 2^2 + 3^2 + 4^2 = 29
+sigma :: (Integral a, Num b) => a -> a -> (a -> b) -> b
+sigma i n f = sum [f k | k <- [i..n]]
