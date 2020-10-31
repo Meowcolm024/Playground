@@ -99,9 +99,7 @@ symb :: String -> Parser String
 symb = token . string
 
 apply :: Parser a -> String -> [(a, String)]
-apply p = parse $ do
-    void space
-    p
+apply = parse . (space >>)
 
 expr :: Parser Int
 expr = term `chain1` addop
@@ -117,9 +115,7 @@ factor = digit <|> do
     return n
 
 digit :: Parser Int
-digit = do
-    x <- token (sat isDigit)
-    return $ ord x - ord '0'
+digit = (\x -> ord x - ord '0') <$> token (sat isDigit)
 
 addop :: Parser (Int -> Int -> Int)
 addop = (symb "+" >> return (+)) <|> (symb "-" >> return (-))
