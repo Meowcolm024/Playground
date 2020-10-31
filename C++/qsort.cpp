@@ -12,21 +12,19 @@ void swap (int &a, int &b)
 int part(int *arr, int p, int r)
 {
     int x = arr[r];
-    int i = p - 1;
 
     for (int j = p; j < r; j++)
     {
         if (arr[j] >= x)
         {
-            i += 1;
-
-            swap(arr[i], arr[j]);
+            swap(arr[p], arr[j]);
+            p++;
         }
     }
 
-    swap(arr[i+1], arr[r]);
+    swap(arr[p], arr[r]);
 
-    return i+1;
+    return p;
 }
 
 void qsort(int *arr, int p, int r)
@@ -42,14 +40,14 @@ void qsort(int *arr, int p, int r)
 
 int main() {
 
-    int arr[] = {1,5,4,9,3,0,7,6,2,8};
+    int arr[] = {1,5,4,9,4,8,0,16,12,-4,-6,0,7,6,2,8};
 
     cout << "Before: ";
     for (auto i : arr)
         cout << i << " ";
     cout << endl;
 
-    qsort(arr, 0, 9);
+    qsort(arr, 0, 15);
 
     cout << "After:  ";
     for (auto i : arr)
