@@ -22,10 +22,10 @@ primes = 2 : filter isPrime [3 ..]
 -- > isPrime 29 == True
 -- > isPrime 8 == False
 isPrime :: Int -> Bool
-isPrime n = foldr (\x acc -> (x*x > n) || (n `rem` x /= 0 && acc)) False primes
+isPrime n = foldr (\x acc -> (x * x > n) || (n `rem` x /= 0 && acc)) False primes
 
 -- | fibs
--- 
+--
 -- > fibs == [0, 1, 1, 2, 3, 5, 8, ...
 fibs :: [Int]
 fibs = 0 : 1 : zipWith (+) fibs (tail fibs)
@@ -36,11 +36,33 @@ fibs = 0 : 1 : zipWith (+) fibs (tail fibs)
 -- > fact 5 == 5 * 4 * 3 * 2 * 1 == 120
 fact :: Integral a => a -> a
 fact 0 = 1
-fact n = product [1..n]
+fact n = product [1 .. n]
 
 -- | Big sigma to get sum
 --
 -- > sigma 1 10 id = 1 + 2 + 3 .. + 10 = 55
 -- > sigma 2 4 (\x -> x^2) = 2^2 + 3^2 + 4^2 = 29
 sigma :: (Integral a, Num b) => a -> a -> (a -> b) -> b
-sigma i n f = sum [f k | k <- [i..n]]
+sigma i n f = sum [f k | k <- [i .. n]]
+
+-- | traceFold to trace iteration
+--
+-- > traceFold (+1) 0 5 == [1, 2, 3, 4, 5]
+traceFold :: Num a => (a -> a) -> a -> Int -> [a]
+traceFold f v i
+  | i <= 0 = []
+  | otherwise = t : traceFold f t (i -1)
+  where
+    t = f v
+
+traceGcd :: Integral t => t -> t -> [(t, t)]
+traceGcd a b =
+  if b == 0
+    then pure (a, b)
+    else (a, b) : traceGcd b (a `mod` b)
+
+bezout :: Integral a => a -> a -> (a, a)
+bezout = ((foldr (\(q, _) (x, y) -> (y - q * x, x)) (1, 0) . init) .) . go
+  where
+    go _ 0 = []
+    go j k = let (q, r) = j `divMod` k in (q, r) : go k r
