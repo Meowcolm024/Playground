@@ -55,14 +55,13 @@ traceFold f v i
   where
     t = f v
 
-traceGcd :: Integral t => t -> t -> [(t, t)]
+traceGcd :: Integral t => t -> t -> [(t, t, t, t)]
 traceGcd a b =
   if b == 0
-    then pure (a, b)
-    else (a, b) : traceGcd b (a `mod` b)
+    then []
+    else (a, b, a `div` b, a `mod` b) : traceGcd b (a `mod` b)
 
 bezout :: Integral a => a -> a -> (a, a)
-bezout = ((foldr (\(q, _) (x, y) -> (y - q * x, x)) (1, 0) . init) .) . go
-  where
-    go _ 0 = []
-    go j k = let (q, r) = j `divMod` k in (q, r) : go k r
+bezout =
+  ((foldr (\(q, _) (x, y) -> (y - q * x, x)) (1, 0) . init) .)
+    . ((map (\(_, _, p, q) -> (p, q)) .) . traceGcd)
