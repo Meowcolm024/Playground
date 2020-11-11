@@ -42,8 +42,8 @@ fact n = product [1 .. n]
 --
 -- > sigma 1 10 id = 1 + 2 + 3 .. + 10 = 55
 -- > sigma 2 4 (\x -> x^2) = 2^2 + 3^2 + 4^2 = 29
-sigma :: (Integral a, Num b) => a -> a -> (a -> b) -> b
-sigma i n f = sum [f k | k <- [i .. n]]
+sigma :: (Integral a, Floating b) => a -> a -> (b -> b) -> b
+sigma i n f = sum [f $ fromIntegral k | k <- [i .. n]]
 
 -- | traceFold to trace iteration
 --
@@ -55,13 +55,27 @@ traceFold f v i
   where
     t = f v
 
+-- | traceGcd to show the whole process
+--
+-- > (a, b, quot, rem)
 traceGcd :: Integral t => t -> t -> [(t, t, t, t)]
 traceGcd a b =
   if b == 0
     then []
     else (a, b, a `div` b, a `mod` b) : traceGcd b (a `mod` b)
 
+-- | bezout
+--
+-- > bezout a b = (s, t) -- a => modulo; b => number
+-- > gcd a b == s*a + t*b
 bezout :: Integral a => a -> a -> (a, a)
 bezout =
   ((foldr (\(q, _) (x, y) -> (y - q * x, x)) (1, 0) . init) .)
     . ((map (\(_, _, p, q) -> (p, q)) .) . traceGcd)
+
+-- | inverseZm
+--
+-- > inverseZm a m = x
+-- > a*x `mod` m == 1
+inverseZm :: Integral a => a -> a -> a
+inverseZm n m = mod (fst (bezout m n)) m

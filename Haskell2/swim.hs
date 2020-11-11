@@ -33,10 +33,11 @@ rmMax Leaf = []
 rmMax (Node Leaf x Leaf) = pure x
 rmMax (Node Leaf x r@(Node _ _ _)) = x : rmMax r
 rmMax (Node l@(Node _ _ _) x Leaf) = x : rmMax l
-rmMax (Node l@(Node _ vl _) x r@(Node _ vr _)) =
-  if vl > vr
-    then x : rmMax l ++ rmMax r
-    else x : rmMax r ++ rmMax l
+rmMax (Node l@(Node _ _ _) v r@(Node _ _ _)) = v : merge (rmMax l) (rmMax r) -- becomes merge ???
+  where
+    merge xs [] = xs
+    merge [] ys = ys
+    merge (x:xs) (y:ys) = if x > y then x : merge xs (y:ys) else y : merge (x:xs) ys
 
 fromFold :: (Foldable t, Ord a) => t a -> Tree a
 fromFold = foldr insert Leaf
@@ -73,3 +74,6 @@ t2 =
 
 l1 :: [Int]
 l1 = [1,4,3,6,8,4,12,4,43,12,89,5,0]
+
+heapSort :: Ord a => [a] -> [a]
+heapSort = rmMax . swim . fromFold
