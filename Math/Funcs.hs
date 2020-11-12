@@ -59,10 +59,8 @@ traceFold f v i
 --
 -- > (a, b, quot, rem)
 traceGcd :: Integral t => t -> t -> [(t, t, t, t)]
-traceGcd a b =
-  if b == 0
-    then []
-    else (a, b, a `div` b, a `mod` b) : traceGcd b (a `mod` b)
+traceGcd _ 0 = []
+traceGcd a b = (a, b, a `div` b, a `mod` b) : traceGcd b (a `mod` b)
 
 -- | bezout
 --
