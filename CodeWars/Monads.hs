@@ -1,7 +1,7 @@
 {-# LANGUAGE NoImplicitPrelude #-}
 module Monads where
 
-import Prelude hiding (Monad, Identity, Maybe(..), State, Reader, Writer)
+import Prelude hiding (Monad, Identity, Maybe(..), State, Reader, Writer, (>>=))
 -- import Data.Monoid
 
 class Monad m where
@@ -47,3 +47,4 @@ instance Monoid w => Monad (Writer w) where
   (Writer (s, v)) >>= f = 
       let Writer (s2, v2) = f v
       in Writer (s <> s2, v2)
+
