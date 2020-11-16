@@ -1,4 +1,4 @@
-import Control.Monad
+import Control.Monad (forM_, ap, liftM )
 
 -------------------------------------------------------------------------------
 -- State Monad Implementation
@@ -66,13 +66,76 @@ setMut a x = modMut a (const x)
 
 mutTest :: State [(Int, Int)] Int
 mutTest = do
-    x <- newMut 1
-    modMut x (+11)
-    modMut x (`div`2)
-    y <- newMut 23
-    getMut x >>= (setMut y . (*2))
-    getMut y
+  x <- newMut 1
+  modMut x (+ 11)
+  modMut x (`div` 2)
+  y <- newMut 23
+  getMut x >>= (setMut y . (* 2))
+  getMut y
+
+-- | foreach loop
+--
+-- > for == forM_
+for :: Monad m => [t] -> (t -> m a) -> m ()
+for [] _ = return ()
+for (x : xs) act = act x >> for xs act
+
+while :: Int -> (Int -> Bool) -> State [(Int, Int)] () -> State [(Int, Int)] ()
+while r cond act = do
+  i <- getMut r
+  if cond i then act >> while r cond act else return ()
+
+iff :: Monad m => Bool -> m () -> m ()
+iff cond act = if cond then act else return ()
+
+mutIOTest :: IO ()
+mutIOTest = do
+  x <- readLn
+  y <- readLn
+  print $
+    flip evalState zero $ do
+      v <- newMut x
+      modMut v (* y)
+      forM_ [1 .. y] $ \i -> do
+        iff (i <= 3) $ do
+          modMut v (+ i)
+        iff (i > 3) $ do
+          modMut v (+ x * i)
+      getMut v
+
+fact :: Int -> Int
+fact n = def $ do
+  v <- newMut 1
+  iff (n > 0) $ do
+    forM_ [1 .. n] $ \i -> do
+      modMut v (* i)
+  getMut v
+
+sum' :: Int -> Int
+sum' n = def $ do
+  v <- newMut n
+  r <- newMut 0
+  while v (> 0) $ do
+    r += v
+    modMut v (\x -> x -1)
+  getMut r
+
+def :: State [a] c -> c
+def = flip evalState zero
+
+(+=) :: Int -> Int -> State [(Int, Int)] ()
+x += i = getMut i >>= (modMut x . (+))
+
+(*=) :: Int -> Int -> State [(Int, Int)] ()
+x *= i = getMut i >>= (modMut x . (*))
+
+(-=) :: Int -> Int -> State [(Int, Int)] ()
+x -= i = getMut i >>= (modMut x . (-))
+
+lit n = newMut n -- use something like either :)
+
 
 main :: IO ()
 main = do
   print $ evalState mutTest zero
+  mutIOTest
