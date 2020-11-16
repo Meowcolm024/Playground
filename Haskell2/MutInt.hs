@@ -134,7 +134,6 @@ x -= i = getMut i >>= (modMut x . (-))
 
 lit n = newMut n -- use something like either :)
 
-
 main :: IO ()
 main = do
   print $ evalState mutTest zero
