@@ -40,7 +40,7 @@ type Pointer = Either Integer Int
 lkup :: Pointer -> [(Pointer, Integer)] -> Integer
 lkup k@(Right _) d = case lookup k d of
   Just x -> x
-  Nothing -> error "Unbounded"
+  Nothing -> error "Unbounded var!"
 lkup _ _ = undefined
 
 zero :: [a]
@@ -68,15 +68,15 @@ while r cond act = do
 
 (+=) :: Pointer -> Pointer -> State [(Pointer, Integer)] ()
 x += i@(Right _) = getMut i >>= (modMut x . (+))
-x += (Left i) = modMut x (+ (fromIntegral i))
+x += (Left i) = modMut x (+  i)
 
 (*=) :: Pointer -> Pointer -> State [(Pointer, Integer)] ()
 x *= i@(Right _) = getMut i >>= (modMut x . (*))
-x *= (Left i) = modMut x (* (fromIntegral i))
+x *= (Left i) = modMut x (*  i)
 
 (-=) :: Pointer -> Pointer -> State [(Pointer, Integer)] ()
 x -= i@(Right _) = getMut i >>= (modMut x . (-))
-x -= (Left i) = modMut x (\n -> n - (fromIntegral i))
+x -= (Left i) = modMut x (\n -> n -  i)
 
 lit :: Integer -> Pointer
 lit = Left
@@ -85,7 +85,7 @@ def :: State [(Pointer, Integer)] Pointer -> Integer
 def st = let (key, cnt) = runState st zero in 
   case key of
   Right k -> lkup (Right k) cnt
-  Left k -> fromIntegral k
+  Left k -> k
 
 var :: Integer -> State [(Pointer, Integer)] Pointer
 var = newMut
