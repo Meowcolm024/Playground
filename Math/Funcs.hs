@@ -68,8 +68,7 @@ traceGcd a b = (a, b, a `div` b, a `mod` b) : traceGcd b (a `mod` b)
 -- > gcd a b == s*a + t*b
 bezout :: Integral a => a -> a -> (a, a)
 bezout =
-  ((\(p, q) -> (q, p)) .)
-    . ((foldr (\(q, _) (x, y) -> (y - q * x, x)) (1, 0) . init) .)
+    ((foldr (\(q, _) (x, y) -> (y - q * x, x)) (1, 0) . init) .)
     . ((map (\(_, _, p, q) -> (p, q)) .) . traceGcd)
 
 -- | inverseZm
