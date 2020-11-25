@@ -24,3 +24,4 @@ calc' x y = sigma 0 y (\k -> (-1)^k * comb y k * (y-k) ^ x)
 
 prob :: Integer -> Integer -> Ratio Integer
 prob x y = calc x y % y ^ x
+
