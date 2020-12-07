@@ -23,3 +23,4 @@ spec = do
       baseToBase 32 18 "HELLO" `shouldBe` "9C7056"
       baseToBase 35 24 "FGO" `shouldBe` "18LN"
       baseToBase 5 29 "22332233" `shouldBe` "84KC"
+      baseToBase 13 4 "123ABC" `shouldBe` "1222221303"
