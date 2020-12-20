@@ -9,6 +9,7 @@ class tplot:
         self.margin = margin
 
     def plot(self):
+        # get all cords
         vals = []
         s = self.interval[0]
         while s <= self.interval[1]:
@@ -23,16 +24,28 @@ class tplot:
         screen.setworldcoordinates(
             self.interval[0], min_y, self.interval[1], max_y)
 
+        # draw axes
         axes = turtle.Turtle()
         axes._tracer(False)
-        axes.goto(self.interval[0], 0)
-        axes.goto(self.interval[1], 0)
+        while axes.xcor() > self.interval[0]:
+            axes.dot()
+            axes.goto(axes.xcor()-1,axes.ycor())
         axes.home()
-        axes.goto(0, max_y)
-        axes.goto(0, min_y)
+        while axes.xcor() < self.interval[1]:
+            axes.dot()
+            axes.goto(axes.xcor()+1,axes.ycor())
+        axes.home()
+        while axes.ycor() > min_y:
+            axes.dot()
+            axes.goto(axes.xcor(),axes.ycor()-1)
+        axes.home()
+        while axes.ycor() < max_y:
+            axes.dot()
+            axes.goto(axes.xcor(),axes.ycor()+1)
         axes._tracer(True)
         axes.hideturtle()
 
+        # plot
         plotter = turtle.Turtle()
         plotter.color("blue")
         plotter._tracer(False)
