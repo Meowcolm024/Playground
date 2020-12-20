@@ -34,6 +34,7 @@ class tplot:
         axes.hideturtle()
 
         plotter = turtle.Turtle()
+        plotter.color("blue")
         plotter._tracer(False)
         plotter.pu()
         plotter.goto(vals[0])
@@ -43,6 +44,7 @@ class tplot:
             plotter.goto(x, y)
 
         plotter._tracer(True)
+        plotter.hideturtle()
         screen.mainloop()
 
 
