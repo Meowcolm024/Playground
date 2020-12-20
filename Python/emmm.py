@@ -1,12 +1,8 @@
-import turtle
+mylist = []
 
-turtle.left(90)
+def add():
+    mylist.append(1)
 
-def tick():
-    turtle.circle(100, -6)
-    # turtle.ontimer(tick, 1000)
-
-for i in range(60):
-    turtle.ontimer(tick, 1000*i)
-
-turtle.done()
+for i in range(5):
+    print(mylist)
+    add()
