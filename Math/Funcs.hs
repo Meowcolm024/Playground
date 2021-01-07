@@ -2,8 +2,8 @@ module Math.Funcs where
 
 -- | Combinations i.e.
 --
--- > comb 6 0 == 1
--- > comb 5 2 == 0
+-- >>> comb 6 0
+-- 1
 comb :: Integral a => a -> a -> a
 comb _ 0 = 1
 comb m n = go (n -1) m `div` fact n

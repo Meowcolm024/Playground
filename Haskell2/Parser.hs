@@ -101,24 +101,24 @@ symb = token . string
 apply :: Parser a -> String -> [(a, String)]
 apply = parse . (space >>)
 
-expr :: Parser Int
+expr :: Parser Float
 expr = term `chain1` addop
 
-term :: Parser Int
+term :: Parser Float
 term = factor `chain1` mulop
 
-factor :: Parser Int
+factor :: Parser Float
 factor = digit <|> do
     void $ symb "("
     n <- expr
     void $ symb ")"
     return n
 
-digit :: Parser Int
-digit = (\x -> ord x - ord '0') <$> token (sat isDigit)
+digit :: Parser Float
+digit = read <$> token (many1 $ (sat isDigit) <|> char '.')
 
-addop :: Parser (Int -> Int -> Int)
+addop :: Parser (Float -> Float -> Float)
 addop = (symb "+" >> return (+)) <|> (symb "-" >> return (-))
 
-mulop :: Parser (Int -> Int -> Int)
-mulop = (symb "*" >> return (*)) <|> (symb "/" >> return div)
+mulop :: Parser (Float -> Float -> Float)
+mulop = (symb "*" >> return (*)) <|> (symb "/" >> return (/))
