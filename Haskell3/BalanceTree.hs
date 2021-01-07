@@ -1,19 +1,18 @@
 module BalanceTree where
 
+import Data.Function ((&))
+
 sat :: (a -> Bool) -> (a -> a) -> (a -> a)
 sat p f = \x -> if p x then f x else x
 
-infixl 1 &
-
-(&) :: a -> (a -> c) -> c
-(&) = flip ($)
+type Key = Int
 
 data Color = Red | Black deriving (Show)
 
 data Tree a
   = Leaf
   | Node
-      { _key :: Int,
+      { _key :: Key,
         _val :: a,
         _left :: Tree a,
         _right :: Tree a,
@@ -33,14 +32,6 @@ setColor c (Node k v l r s _) = Node k v l r s c
 isRed :: Tree a -> Bool
 isRed (Node _ _ _ _ _ Red) = True
 isRed _                    = False
-
-setLeft :: Tree a -> Tree a -> Tree a
-setLeft Leaf               _ = Leaf
-setLeft (Node k v _ r s c) l = Node k v l r s c
-
-setRight :: Tree a -> Tree a -> Tree a
-setRight Leaf               _ = Leaf
-setRight (Node k v l _ s c) r = Node k v l r s c
 
 size :: Tree a -> Int
 size Leaf     = 0
@@ -71,7 +62,7 @@ flipColor (Node k v l@Node{} r@Node{} n _) =
     Node k v (setColor Black l) (setColor Black r) n Red
 flipColor n = n
 
-put :: Int -> a -> Tree a -> Tree a
+put :: Key -> a -> Tree a -> Tree a
 put k v Leaf = Node k v Leaf Leaf 1 Red
 put k v (Node nk nv l r n c) =
     make & sat sa rotateLeft & sat sb rotateRight & sat sc flipColor & resize
@@ -86,17 +77,17 @@ put k v (Node nk nv l r n c) =
     resize (Node rk rv rl rr _ rc) =
         Node rk rv rl rr (size rl + size rr + 1) rc
 
-delete :: Int -> Tree a -> Tree a
+delete :: Key -> Tree a -> Tree a
 delete _ Leaf = Leaf
 delete _ _    = undefined
 
-search :: Int -> Tree a -> Maybe a
+search :: Key -> Tree a -> Maybe a
 search _ Leaf = Nothing
 search key (Node k v l r _ _) | key < k   = search key l
                               | key > k   = search key r
                               | otherwise = Just v
 
-putRoot :: Int -> a -> Tree a -> Tree a
+putRoot :: Key -> a -> Tree a -> Tree a
 putRoot k v t = put k v t & setColor Black
 
 sample :: Tree Char
