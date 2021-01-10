@@ -1,6 +1,6 @@
 module BalanceTree where
 
-import Data.Function ((&))
+import           Data.Function                  ( (&) )
 
 sat :: (a -> Bool) -> (a -> a) -> (a -> a)
 sat p f = \x -> if p x then f x else x
@@ -32,6 +32,14 @@ setColor c (Node k v l r s _) = Node k v l r s c
 isRed :: Tree a -> Bool
 isRed (Node _ _ _ _ _ Red) = True
 isRed _                    = False
+
+isEmpty :: Tree a -> Bool
+isEmpty Leaf = True
+isEmpty _    = False
+
+resize :: Tree a -> Tree a
+resize Leaf                    = Leaf
+resize (Node rk rv rl rr _ rc) = Node rk rv rl rr (size rl + size rr + 1) rc
 
 size :: Tree a -> Int
 size Leaf     = 0
@@ -73,13 +81,56 @@ put k v (Node nk nv l r n c) =
     sa x = isRed (right x) && (not . isRed . left) x
     sb x = isRed (left x) && (isRed . left . left) x
     sc x = isRed (left x) && isRed (right x)
-    resize Leaf = Leaf
-    resize (Node rk rv rl rr _ rc) =
-        Node rk rv rl rr (size rl + size rr + 1) rc
+
+moveRedLeft :: Tree a -> Tree a
+moveRedLeft = go . flipColor
+  where
+    go h@(Node k v l r n c) | (isRed . left . right) h =
+        rotateLeft $ Node k v l (rotateRight r) n c
+    go h = h
+
+delMinRoot :: Tree a -> Tree a
+delMinRoot Leaf = Leaf
+delMinRoot root = root & sat sa (setColor Red) & delMin & sat
+    (not . isEmpty)
+    (setColor Black)
+    where sa x = (not . isRed . left) x && (not . isRed . right) x
+
+delMin :: Tree a -> Tree a
+delMin Leaf                  = Leaf
+delMin (Node _ _ Leaf _ _ _) = Leaf
+delMin h =
+    h
+        & sat sa moveRedLeft
+        & go
+        & sat sb rotateLeft
+        & sat sc rotateLeft
+        & sat sd rotateRight
+        & sat se flipColor'
+        & resize
+  where
+    sa x = (not . isRed . left) x && (not . isRed . left . left) x
+    go Leaf               = Leaf
+    go (Node k v l r n c) = Node k v (delMin l) r n c
+    sb x = isRed (right x)
+    sc x = isRed (right x) && (not . isRed . left) x
+    sd x = isRed (left x) && (isRed . left . left) x
+    se x = isRed (left x) && isRed (right x)
+    flipColor' (Node k v l r n c) = revert $ Node k v (revert l) (revert r) n c
+      where
+        revert Leaf = Leaf
+        revert x    = if isRed x then setColor Black x else setColor Red x
+    flipColor' x = x
 
 delete :: Key -> Tree a -> Tree a
 delete _ Leaf = Leaf
 delete _ _    = undefined
+
+deleteRoot :: Key -> Tree a -> Tree a
+deleteRoot key root = root & sat sa (setColor Red) & delete key & sat
+    isEmpty
+    (setColor Black)
+    where sa x = (not . isRed . left) x && (not . isRed . left . left) x
 
 search :: Key -> Tree a -> Maybe a
 search _ Leaf = Nothing
