@@ -89,6 +89,7 @@ moveRedLeft = go . flipColor
         rotateLeft $ Node k v l (rotateRight r) n c
     go h = h
 
+-- flawed
 delMinRoot :: Tree a -> Tree a
 delMinRoot Leaf = Leaf
 delMinRoot root = root & sat sa (setColor Red) & delMin & sat
