@@ -2,6 +2,7 @@
 
 import Control.Arrow
 import qualified Control.Category as Cat
+import System.Random
 
 newtype Circuit a b = Circuit {unCircuit :: a -> (Circuit a b, b)}
 
@@ -43,3 +44,21 @@ mean2 = proc value -> do
   t <- total -< value
   n <- total -< 1
   returnA -< t / n
+
+generator :: Random a => (a, a) -> StdGen -> Circuit () a
+generator range rng = accum rng $ \_ rng -> randomR range rng
+
+dictionary :: [String]
+dictionary = ["dog", "cat", "bird"]
+
+pickWord :: StdGen -> Circuit () String
+pickWord rng = proc () -> do
+  idx <- generator (0, length dictionary - 1) rng -< ()
+  returnA -< dictionary !! idx
+
+oneShot :: Circuit () Bool
+oneShot = accum True $ \_ acc -> (acc, False)
+
+delayedEcho :: b -> Circuit b b
+delayedEcho acc = accum acc (flip (,))
+
