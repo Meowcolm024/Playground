@@ -2,6 +2,8 @@
 
 import Control.Arrow
 import qualified Control.Category as Cat
+import Control.Monad (MonadPlus (mplus))
+import Data.Maybe
 import System.Random
 
 newtype Circuit a b = Circuit {unCircuit :: a -> (Circuit a b, b)}
@@ -62,3 +64,66 @@ oneShot = accum True $ \_ acc -> (acc, False)
 delayedEcho :: b -> Circuit b b
 delayedEcho acc = accum acc (flip (,))
 
+instance ArrowChoice Circuit where
+  left orig@(Circuit cir) = Circuit $ \ebd -> case ebd of
+    Left b ->
+      let (cir', c) = cir b
+       in (left cir', Left c)
+    Right d -> (left orig, Right d)
+
+getWord :: StdGen -> Circuit () String
+getWord rng = proc () -> do
+  firstTime <- oneShot -< ()
+  mPicked <-
+    if firstTime
+      then do
+        picked <- pickWord rng -< ()
+        returnA -< Just picked
+      else returnA -< Nothing
+  mWord <- accum' Nothing mplus -< mPicked
+  returnA -< fromJust mWord
+
+attempts :: Int
+attempts = 5
+
+livesLeft :: Int -> String
+livesLeft hung = "Lives [" ++ replicate (attempts - hung) '#' ++ replicate hung ' ' ++ "]"
+
+hangman :: StdGen -> Circuit String (Bool, [String])
+hangman rng = proc userInput -> do
+  word <- getWord rng -< ()
+  let letter = listToMaybe userInput
+  guessed <- updateGuess -< (word, letter)
+  hung <- updateHung -< (word, letter)
+  end <- delayedEcho True -< not (word == guessed || hung >= attempts)
+  let result =
+        if word == guessed
+          then [guessed, "You won!"]
+          else
+            if hung >= attempts
+              then [guessed, livesLeft hung, "You died"]
+              else [guessed, livesLeft hung]
+  returnA -< (end, result)
+  where
+    updateGuess = accum' (repeat '_') $ \(word, letter) guess ->
+      case letter of
+        Just l -> map (\(w, g) -> if w == l then w else g) (zip word guess)
+        Nothing -> take (length word) guess
+    updateHung = proc (word, letter) -> do
+      total
+        -< case letter of
+          Just l -> if l `elem` word then 0 else 1
+          Nothing -> 0
+
+main :: IO ()
+main = do
+  rng <- getStdGen
+  interact $
+    unlines
+      . ("Welcome to Arrow Hangman" :)
+      . concat
+      . map snd
+      . takeWhile fst
+      . runCircuit (hangman rng)
+      . ("" :)
+      . lines
