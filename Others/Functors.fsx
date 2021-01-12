@@ -48,3 +48,5 @@ module Const =
     let unConst x =
         match x with
         | Const y -> y
+
+    let fmap (_: 'a -> 'c) (x: Const<'a, 'b>) = x
