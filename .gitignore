@@ -7,3 +7,5 @@
 /Others/*.ibc
 *.aes
 /SICP2/*.ibc
+.fake
+.ionide
