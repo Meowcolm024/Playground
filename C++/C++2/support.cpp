@@ -5,8 +5,8 @@ void update(double dt);
 void local();
 
 void update(double dt) {
-    extern double warming;  // `warming` in external.cpp
-    warming += dt;
+    extern double warming;  // this line is optional
+    warming += dt;          // `warming` in external.cpp
     std::cout << "updated to: " << warming << " degrees.\n";
 }
 
