@@ -1,66 +1,131 @@
 #include <iostream>
 #include "Stack.h"
 
-using namespace stack;
-
-Stack::Stack(void)
+namespace stack
 {
-    vals = 0;
-}
-
-Stack::Stack(int *items, int n)
-{
-    for (int i = 0; i < n; i++)
+    void Node::setNode(int v, Node *n)
     {
-        Node *v = new Node;
-        v->setNode(items[i], vals);
-        vals = v;
+        this->val = v;
+        this->next = n;
     }
-}
 
-Stack::~Stack()
-{
-    if (!vals)
-        return;
-    Node *i = vals;
-    while (i)
+    std::ostream &operator<<(std::ostream &os, const Node &n)
     {
-        Node *j = i;
-        std::cout << "Cleaning: " << j->val << std::endl;
-        delete j;
-        i = i->next;
+        if (!(n.next))
+            os << n.val;
+        else
+            os << n.val << " " << (*n.next);
+        return os;
     }
-}
 
-void Stack::push(int item)
-{
-    Node *t = new Node;
-    t->setNode(item, vals);
-    vals = t;
-}
+    Stack::Stack(void)
+    {
+        vals = 0;
+        size = 0;
+    }
 
-void Stack::operator<<(int i)
-{
-    push(i);
-}
+    Stack::Stack(int *items, int n)
+    {
+        size = n;
+        for (int i = 0; i < n; i++)
+        {
+            Node *v = new Node;
+            v->setNode(items[i], vals);
+            vals = v;
+        }
+    }
 
-int Stack::pop()
-{
-    if (!vals)
-        return 0;
-    auto x = vals->val;
-    vals = vals->next;
-    return x;
-}
+    Stack::~Stack()
+    {
+        if (!vals)
+            return;
+        Node *i = vals;
+        while (i)
+        {
+            Node *j = i;
+            std::cout << "Cleaning: " << j->val << std::endl;
+            delete j;
+            i = i->next;
+        }
+    }
 
-int Stack::top() const
-{
-    if (!vals)
-        return 0;
-    return vals->val;
-}
+    void Stack::push(int item)
+    {
+        Node *t = new Node;
+        t->setNode(item, vals);
+        vals = t;
+        size++;
+    }
 
-bool Stack::isEmpty() const
-{
-    return (!vals);
-}
+    void Stack::operator<<(int i)
+    {
+        push(i);
+    }
+
+    int Stack::pop()
+    {
+        if (!vals)
+            return 0;
+        auto x = vals->val;
+        vals = vals->next;
+        size--;
+        return x;
+    }
+
+    int Stack::top() const
+    {
+        if (!vals)
+            return 0;
+        return vals->val;
+    }
+
+    bool Stack::isEmpty() const
+    {
+        return (!vals);
+    }
+
+    int Stack::getSize() const
+    {
+        return size;
+    }
+
+    Stack Stack::copy() const
+    {
+        Stack st = Stack();
+        if (isEmpty())
+            return st;
+        else
+        {
+            Node *t = vals;
+            int *tmp = new int[size];
+            for (int i = 0; i < size; i++)
+            {
+                tmp[i] = t->val;
+                t = t->next;
+            }
+            for (int i = size - 1; i >= 0; i--)
+                st.push(tmp[i]);
+            delete[] tmp;
+            return st;
+        }
+    }
+
+    int Stack::operator[](int i) const
+    {
+        if (i >= size)
+            return 0;
+        Node *n = vals;
+        for (int j = 0; j < i; j++)
+            n = n->next;
+        return n->val;
+    }
+
+    std::ostream &operator<<(std::ostream &os, const Stack &st)
+    {
+        if (!st.isEmpty())
+            os << (*st.vals);
+        else
+            os << "(empty stack)";
+        return os;
+    }
+} // namespace stack
