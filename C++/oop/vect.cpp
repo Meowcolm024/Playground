@@ -4,7 +4,11 @@
 
 namespace vec
 {
-    Vector::Vector(){};
+    Vector::Vector()
+    {
+        x = y = mag = ang = 0;
+        mode = Mode::RECT;
+    };
 
     Vector::Vector(double n1, double n2, Mode m)
     {
