@@ -1,6 +1,6 @@
 #include "queue.h"
 
-Queue::Queue(int qs) : qsize(qs)
+Queue::Queue(int qs) : qsize(qs)    // for const and ref (sep by ,)
 {
     front = rear = 0;
     items = 0;

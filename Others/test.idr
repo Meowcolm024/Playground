@@ -1,6 +1,3 @@
-main : IO ()
-main = putStrLn "Hello World"
-
 x : Int
 x = 12
 
@@ -11,6 +8,11 @@ data Omg a = None | One a | Two a a
 
 mapList : (a -> b) -> List a -> List b
 mapList = map
+
+Functor Omg where
+    map _ None = None
+    map f (One x) = One (f x)
+    map f (Two x y) = Two (f x) (f y)
 
 mutual 
     mapSq : List Int -> List Int
@@ -33,3 +35,6 @@ mutual
     isEven : Int -> Bool
     isEven 0 = True
     isEven n = isOdd (n-1)
+
+main : IO ()
+main = putStrLn "Hello World"
