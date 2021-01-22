@@ -1,20 +1,24 @@
-a = 7
-b = 13
-c = 29
-d = [1, 2, 3]
-e = "hello"
-f = 0
+class Identity:
+    def __init__(self, val):
+        self.value = val
 
-def omg(c, z, w):
-    global a
-    a += 10
-    b = 3
-    c *= 2
-    z += z
-    w*2
-    f = 233
-    return b
+    def runIdentity(self):
+        return self.value
 
-f = omg(c, d, e)
+    def __eq__(self, x):
+        if type(x) == Identity:
+            return self.value == x.value
+        else:
+            return self.value == x
 
-print(a, b, c, d, e, f)
+    def __str__(self):
+        return f"{self.value}"
+
+def set(val: Identity, x):
+    val.value = x
+
+x = Identity(100)
+
+set(x, 233)
+
+print(x)

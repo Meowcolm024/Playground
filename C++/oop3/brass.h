@@ -14,10 +14,10 @@ public:
     Brass(const std::string &s = "Nullbody", long an = -1,
           double bal = 0.0);
     void Deposit(double amt);
-    virtual void Withdraw(double amt);
+    virtual void Withdraw(double amt);  // all virtual after
     double Balance() const;
-    virtual void ViewAcct() const;
-    // virtual ~Brass();
+    virtual void ViewAcct() const;      // all virtual after
+    virtual ~Brass() {};
 };
 
 class BrassPlus : public Brass
