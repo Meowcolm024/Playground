@@ -16,7 +16,7 @@ int main()
 
     cout << "Stack stze: " << st->getSize() << endl;
     cout << "Item at #2: " << (*st)[2] << endl;
-    // cout << "Full stack: " << (*st) << endl;
+    cout << "Full stack: " << (*st) << endl;
 
     for (int i = 0; i < 3; i++)
         cout << st->pop() << " ";

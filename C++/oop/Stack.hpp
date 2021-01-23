@@ -14,7 +14,8 @@ namespace stack
 
         Node(a v, Node<a> *n);
         ~Node();
-        friend std::ostream &operator<<(std::ostream &os, const Node<a> &n);
+        template <class T>
+        friend std::ostream &operator<<(std::ostream &os, const Node<T> &n);
     };
 
     template <class a>
@@ -41,7 +42,8 @@ namespace stack
         a operator[](int) const;
         Stack<a> &operator=(const Stack<a> &);
 
-        friend std::ostream &operator<<(std::ostream &os, const Stack<a> &st);
+        template <class T>
+        friend std::ostream &operator<<(std::ostream &os, const Stack<T> &st);
     };
 
     template <class a>
