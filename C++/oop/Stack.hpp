@@ -54,7 +54,7 @@ namespace stack
     template <class a>
     Node<a>::~Node()
     {
-        std::cout << "delete: " << val << std::endl;
+        // std::cout << "delete: " << val << std::endl;
         if (next)
             delete next;
     }
@@ -87,19 +87,21 @@ namespace stack
         }
     }
 
-    // ! problem !
     template <class a>
     Stack<a>::Stack(const Stack<a> &st)
     {
-        if (vals)
-            delete vals;
+        vals = 0;
+        size = 0;
 
-        size = st.getSize();
+        if (st.isEmpty())
+            return;
 
-        for (int i = size - 1; i >= 0; i--)
+        Node<a> *tmp = st.vals;
+        while (tmp)
         {
-            Node<a> *v = new Node<a>(st[i], vals);
+            Node<a> *v = new Node<a>(tmp->val, vals);
             vals = v;
+            tmp = tmp->next;
         }
     }
 
@@ -198,6 +200,7 @@ namespace stack
             delete vals;
 
         size = 0;
+        vals = 0;
 
         Node<a> *t = st.vals;
         a *tmp = new a[st.size];

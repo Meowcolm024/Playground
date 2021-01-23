@@ -27,7 +27,8 @@ int main()
     Stack<double> haha;
     haha = gg;
 
-    // Stack<double> emm(gg);
+    Stack<double> emm(gg);
+    cout << emm.pop()<< endl;
  
     delete st;
 
