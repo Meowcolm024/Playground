@@ -15,10 +15,14 @@ class Identity:
         return f"{self.value}"
 
 def set(val: Identity, x):
-    val.value = x
+    if type(x) == Identity:
+        val.value = x.value
+    else:
+        val.value = x
 
 x = Identity(100)
+y = Identity(233)
 
-set(x, 233)
+set(x, y)
 
 print(x)
