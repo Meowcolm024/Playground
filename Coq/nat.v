@@ -2,15 +2,15 @@ Inductive nat: Type :=
     | O
     | S (n: nat).
 
-    Inductive bool: Type :=
+Inductive bool: Type :=
     | true
     | false.
 
-    Definition negb (b: bool) : bool :=
-        match b with
-        | true => false
-        | false => true
-        end.
+Definition negb (b: bool) : bool :=
+    match b with
+    | true => false
+    | false => true
+    end.
 
 Definition pred (n: nat) : nat :=
     match n with
@@ -66,7 +66,7 @@ Notation "x + y" := (plus x y)
 Notation "x * y" := (plus x y)
     (at level 40, left associativity).
 
-Fixpoint eqn (n m : nat) : bool :=
+Fixpoint eqb (n m : nat) : bool :=
     match n with
     | O =>  match m with
             | O => true
@@ -74,7 +74,7 @@ Fixpoint eqn (n m : nat) : bool :=
             end
     | S n' => match m with
             | O => false
-            | S m' => eqn n' m'
+            | S m' => eqb n' m'
             end
     end.
 
@@ -86,3 +86,157 @@ Fixpoint leb (n m : nat) : bool :=
               | S m' => leb n' m'
               end
     end.
+
+Notation "x =? y" := (eqb x y) 
+    (at level 70).
+Notation "x <=? y" := (leb x y) 
+    (at level 70).
+
+
+
+Theorem plus_O_n: forall n : nat, O + n = n.
+Proof.
+    intros n. simpl. reflexivity.
+Qed.
+
+Theorem plus_1_n: forall n : nat, (S O) + n = S n.
+Proof.
+    intros n. simpl. reflexivity.
+Qed.
+
+Theorem plus_id: forall n m: nat, n = m -> n + n = m + m.
+Proof.
+    intros n m.
+    intros H.
+    rewrite -> H.
+    reflexivity.
+Qed.
+
+Theorem plus_id_exe: forall n m o : nat, 
+    n = m -> m = o -> n + m = m + o.
+Proof.
+    intros n m o.
+    intros H.
+    intros K.
+    rewrite -> H.
+    rewrite -> K.
+    reflexivity.
+Qed.
+
+Theorem mult_0_plus: forall n m : nat,
+    (O + n) * m = n * m.
+Proof.
+    intros n m.
+    rewrite -> plus_O_n.
+    reflexivity.
+Qed.
+
+Theorem mult_1_plus: forall n m : nat,
+    m = S n ->
+    m * ((S O) + n) = m * m.
+Proof.
+    intros n m.
+    intros H.
+    rewrite -> plus_1_n.
+    rewrite -> H.
+    reflexivity.
+Qed.
+
+Theorem plus_1_eq_0 : forall n : nat,
+    (n + (S O)) =? O = false.
+Proof.
+    intros n.
+    destruct n as [| n'] eqn: E.
+    - reflexivity.
+    - reflexivity.
+Qed.
+
+Theorem negneg: forall b: bool,
+    negb (negb b) = b.
+Proof.
+    intros b.
+    destruct b eqn: E.
+    - reflexivity.
+    - reflexivity.
+Qed.
+
+Definition andb (b1: bool) (b2: bool) : bool :=
+    match b1 with
+    | true => b2
+    | false => false
+    end.
+
+Theorem andbcom: forall b c,
+    andb b c = andb c b.
+Proof.
+    intros b c. destruct b eqn: Eb.
+    - destruct c eqn: Ec.
+        + reflexivity.
+        + reflexivity.
+    - destruct c eqn: Ec.
+        + reflexivity.
+        +reflexivity.
+Qed.
+
+(* Theorem andb_exch: forall b c d,
+    andb (andb b c) d = andb b (andb c d).
+Proof.
+    intros [] [] [].
+    - reflexivity.
+    - reflexivity.
+    - reflexivity.
+    - reflexivity.
+    - reflexivity.
+    - reflexivity.
+    - reflexivity.
+    - reflexivity.
+Qed. *)
+
+Theorem andtrue: forall b c:bool, 
+    (andb b c = true) -> (c = true).
+Proof.
+    intros b c.
+    intro H.
+    destruct c eqn: Ec.
+        - reflexivity.
+        - rewrite <- H.
+            destruct b eqn: Eb.
+            + reflexivity.
+            + reflexivity.
+Qed.
+
+Theorem id_f_app2: 
+    forall (f: bool -> bool),
+    (forall (x: bool), f x = x) ->
+        forall (b: bool), f (f b) = b.
+Proof.
+    intros f x.
+    intro b.
+    destruct b eqn: Eb.
+        - rewrite <- x.
+          rewrite <- x.
+          reflexivity.
+        - rewrite <- x.
+          rewrite <- x.
+          reflexivity.
+Qed.
+
+Definition orb (b1: bool) (b2: bool) : bool :=
+    match b1 with
+    | true => true
+    | false => b2
+    end.
+
+Theorem andb_eq_orb: forall (b c: bool),
+    (andb b c = orb b c) -> b = c.
+Proof.
+    destruct b.
+    - destruct c.
+      reflexivity.
+      intro H.
+      inversion H.
+    - destruct c.
+      intro H.
+      inversion H.
+      reflexivity.
+Qed.

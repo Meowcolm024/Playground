@@ -1,7 +1,7 @@
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
 
-module KMeans where
+module Haskell.Practical.KMean where
 
 import           Data.List                      ( minimumBy )
 import qualified Data.Map                      as M

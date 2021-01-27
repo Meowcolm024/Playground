@@ -1,22 +1,14 @@
-import turtle
-
-l = 100
-
-def t1():
-    for i in range(3):
-        turtle.forward(l)
-        turtle.left(120)
-
-def t2():
-    for i in range(3):
-        turtle.forward(l)
-        turtle.right(120)
-
-t1()
-turtle.left(180)
-t2()
-turtle.right(120)
-turtle.forward(l)
-turtle.left(120)
-t2()
-turtle.done() 
+while True:
+    x = input("Number 1: ")
+    if x == "q":
+        break
+    y = input("Number 2: ")
+    if y == "q":
+        break
+    try:
+        x = int(x)
+        y = int(y)
+    except:
+        print("Invalid number")
+    else:
+        print('Do the math yourself :)')
