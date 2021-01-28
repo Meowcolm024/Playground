@@ -99,3 +99,58 @@ Proof.
       rewrite -> multp1.
       reflexivity.
 Qed.
+
+Lemma pns: forall n m:nat, S (n + m) = n + (S m). Admitted.
+Lemma swap: forall n m:nat, n + m = m + n. Admitted.
+Lemma inj: forall p q:nat, S p = S q -> p = q. Admitted.
+
+Theorem plus_nn: forall n m,
+    n + n = m + m -> n = m.
+Proof.
+    intro n. induction n as [| n'].
+    - intros m eq.
+      induction m as [| n'].
+      reflexivity.
+      discriminate eq.
+    - intros m eq.
+      destruct m.
+      + discriminate eq.
+      + injection eq.
+        rewrite <- pns.
+        intro H.
+        assert (P: m + (S m) = S (m + m)).
+        {
+            symmetry.
+            rewrite -> pns.
+            reflexivity.
+        }
+        rewrite -> P in H.
+        rewrite -> IHn' with m.
+        reflexivity.
+        apply inj in H.
+    rewrite -> H.
+    reflexivity.
+Qed.
+
+Lemma feq: forall {X Y: Type} (x y : X) (f: X -> Y),
+    x = y -> f x = f y. Admitted.
+
+Theorem dinj: forall n m,
+    double n = double m ->
+    n = m.
+Proof.
+    intros n m.
+    generalize dependent n.
+    induction m as [| m'].
+    - simpl. intros n eq.
+      destruct n as [| n'] eqn: E.
+      reflexivity.
+      discriminate eq.
+    - intros n eq.
+      destruct n as [| n'] eqn: E.
+      discriminate eq.
+      apply feq.
+      apply IHm'.
+      injection eq as goal.
+      apply goal.
+Qed.
