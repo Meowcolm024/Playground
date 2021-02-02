@@ -14,6 +14,15 @@ Fixpoint eqb (n m : nat) : bool :=
 
 Notation "x =? y" := (eqb x y) (at level 70).
 
+Fixpoint evenb (n: nat) : bool :=
+    match n with
+    | O => true
+    | S O => false
+    | S (S n') => evenb n'
+    end.
+
+Definition oddb (n: nat) : bool := negb (evenb n).
+
 End Nats.
 
 Module Lists.
@@ -35,6 +44,14 @@ Fixpoint nth_err {X: Type} (l: list X) (n: nat) : option X :=
     match l with
     | [] => None
     | x::xs => if n =? 0 then Some x else nth_err xs (pred n)
+    end.
+
+Fixpoint filter {X: Type} (test: X -> bool) (l: list X) : list X :=
+    match l with
+    | [] => []
+    | x::xs => if test x 
+               then x :: (filter test xs)
+               else filter test xs
     end.
 
 End Lists.
@@ -150,5 +167,83 @@ Proof.
       reflexivity.
 Qed.
 
+Definition sillyfun1 (n: nat) : bool :=
+    if n =? 3 then true
+    else if n =? 5 then true
+    else false.
 
+Lemma eqb_true: forall (n m: nat), n =? m = true -> n = m. Admitted.
 
+Theorem sillyfun1_odd: forall (n: nat),
+    sillyfun1 n = true -> oddb n = true.
+Proof.
+    intros n eq.
+    unfold sillyfun1 in eq.
+    destruct (n =? 3) eqn: Heqe3.
+    - apply eqb_true in Heqe3.
+      rewrite -> Heqe3.
+      reflexivity.
+    - destruct (n =? 5) eqn: Heqe5.
+      + apply eqb_true in Heqe5.
+        rewrite -> Heqe5.
+        reflexivity.
+      + discriminate eq.
+Qed.
+
+Theorem eqbsym: forall (n m: nat),
+    (n =? m) = (m =? n).
+Proof.
+    intros n.
+    induction n as [| n' IHn].
+    - destruct m.
+      reflexivity.
+      reflexivity.
+    - destruct m.
+      reflexivity.
+      simpl.
+      apply IHn.
+Qed.
+
+Lemma eqt: forall n: nat, n =? n = true.
+Proof.
+    intro n.
+    induction n as [| n' IHn].
+    reflexivity.
+    simpl.
+    apply IHn.
+Qed.
+
+Theorem eqb_trans: forall n m p,
+    n =? m = true ->
+    m =? p = true ->
+    n =? p = true.
+Proof.
+    intros n m p.
+    intros eq1 eq2.
+    apply eqb_true in eq1.
+    apply eqb_true in eq2.
+    rewrite -> eq1.
+    rewrite -> eq2.
+    apply eqt.
+Qed.
+
+Theorem filter_exe: forall (X: Type) (test: X -> bool) (x: X) (l lf: list X),
+    filter test l = x::lf ->
+    test x = true.
+Proof.
+    intros.
+    generalize dependent x.
+    generalize dependent lf.
+    induction l as [| y ys IHy].
+    - intros. induction lf.
+      + discriminate H.
+      + discriminate H.
+    - intros.
+      inversion H.
+      destruct (test y) eqn: P.
+      + injection H1 as Ha Hb.
+        rewrite <- Ha.
+        apply P.
+      + apply IHy in H1.
+        apply H1.
+Qed.
