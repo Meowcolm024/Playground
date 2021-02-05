@@ -1,4 +1,4 @@
-module Vector where
+module Math.Vector where
 
 data Vector
   = Rec Double Double
@@ -60,8 +60,23 @@ ang v = ang $ convert v
 
 --------------------------------
 
-r t = Rec (2.4 * t) (3 -1.2 * t ** 2)
+data Object = Object
+  { velocity :: Vector,
+    location :: Vector
+  }
 
-v t = Rec 2.4 (-2.4 * t)
+instance Show Object where
+  show (Object (Mag v a) (Rec x y)) =
+    "Object {velocity = " ++ show v ++ ", angle = " ++ show a
+      ++ "} {x = "
+      ++ show x
+      ++ ", y = "
+      ++ show y
+      ++ "}"
+  show (Object v l@Mag {}) = show $ Object v (convert l)
+  show (Object v@Rec {} l) = show $ Object (convert v) l
 
-a t = Rec 0 (-2.4)
+stdobj :: Object -> Object
+stdobj o@(Object Mag{} Rec{}) = o
+stdobj (Object v l@Mag {}) = stdobj $ Object v (convert l)
+stdobj (Object v@Rec {} l) = stdobj $ Object (convert v) l
