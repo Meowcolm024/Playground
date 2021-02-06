@@ -7,7 +7,7 @@
     (let ((fname fn)                                        ;; members
           (lname ln))
          (define (dispatch message)                         ;; methods
-            (cond
+            (cond                                           ;; public interfaces
                 ((eq? message 'first-name) fname)
                 ((eq? message 'last-name) lname)
                 ((eq? message 'set-fname)                   ;; method with args
@@ -18,6 +18,7 @@
                 (else (error "Unknown message"))))
         dispatch))
 
+;; we convert message-passing style to function call
 (define (first-name p) (p 'first-name))
 (define (last-name p) (p 'last-name))
 (define (show p) (p 'show))
@@ -25,7 +26,7 @@
 (define (set-fname! p new-name) ((p 'set-fname) new-name))
 
 (define (person+ bs ag)                                     ;; constructor using base class
-    (let ((base bs)                                         ;; base class
+    (let ((base bs)                                         ;; base class object
           (age ag))                                         ;; new member
          (define (dispatch message)                         ;; methods
             (cond
@@ -33,7 +34,7 @@
                 ((eq? message 'grow) (set! age (+ age 1)))  ;; new method with side-effect
                 ((eq? message 'copy) (person+ (base 'copy) age))
                 ((eq? message 'show)                        ;; override base class 'show'
-                    (string-append (bs message) " " (number->string age)))
+                    (string-append (base message) " " (number->string age)))
                 (else (base message))))                     ;; inherit base class methods
     dispatch))
 
