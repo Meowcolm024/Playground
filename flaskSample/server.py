@@ -4,6 +4,11 @@ app = Flask(__name__)
 
 @app.route('/', methods=['GET', 'POST'])
 def form():
+    if not os.path.isfile('output.txt'):
+        file = open('output.txt', 'a')
+    file = open('output.txt', 'r')
+    x = file.readlines()
+    file.close()
     return render_template('form.html')
 
 @app.route('/hello', methods=['GET', 'POST'])
