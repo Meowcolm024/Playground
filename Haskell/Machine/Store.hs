@@ -60,18 +60,18 @@ initWorld = (Customer, StartS, StartB)
 worldDo :: World (Customer, Shop, Bank)
 worldDo = do
   pay 
-  cancel
   redeem
+  transfer
   ship
   get
 
 -- >>> evalState worldDo initWorld
 -- it :: ()
--- (0.00 secs, 94,520 bytes)
+-- (0.01 secs, 95,288 bytes)
 -- ( Customer
--- , Redeemed
--- , Cancelled
+-- , Shipped
+-- , Transfer
 -- )
 -- it :: (Customer, Shop, Bank)
--- (0.01 secs, 135,648 bytes)
+-- (0.01 secs, 133,712 bytes)
 --

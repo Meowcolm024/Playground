@@ -25,5 +25,7 @@ switchDo = do
   trigger
   get -- get final state
 
+-- >>> main
+-- On
 main :: IO ()
 main = print $ evalState switchDo initSwitch
