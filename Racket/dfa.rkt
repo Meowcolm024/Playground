@@ -25,6 +25,7 @@
 
 ;; accept 0  -> 1  -> any in {0, 1}
 ;; state  q0 -> q2 -> q1
+;; any string with 01 as sybstring
 (define dfa-01 
     (list '(q0 q1 q2)       ;; state set
           '(0 1)            ;; input set
@@ -43,7 +44,7 @@
           '(q1)             ;; final state
     ))
 
-;; both even 0s and even 1s
+;; input string with both even 0s and even 1s
 (define dfa-even-01
     (let ((input-set '(0 1)))
     (list '(q0 q1 q2 q3)
@@ -53,7 +54,7 @@
                 (cond ((eq? st 'q0) 
                        (cond ((eq? inp 0) 'q2)
                              ((eq? inp 1) 'q1)
-                             (else 'q0))) 
+                             (else 'q0)))
                       ((eq? st 'q1) 
                        (cond ((eq? inp 0) 'q3)
                              ((eq? inp 1) 'q0)
@@ -65,7 +66,7 @@
                       ((eq? st 'q2) 
                        (cond ((eq? inp 0) 'q0)
                              ((eq? inp 1) 'q3)
-                             (else 'q2))) 
+                             (else 'q2)))
                       (else 'fail))
                 'fail))
           'q0

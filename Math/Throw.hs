@@ -1,7 +1,7 @@
 module Throw where
 
-import Math.Vector
 import Math.Newton
+import Math.Vector
 
 g :: Double
 g = 9.81
@@ -18,18 +18,16 @@ horiz (Object v l@Mag {}) = horiz $ Object v (convert l)
 horiz (Object v@Rec {} l) = horiz $ Object (convert v) l
 
 ground :: Object -> Maybe Object
-ground o@(Object (Mag _ a0) (Rec _ _))
-  | a0 > 0 = ground $ horiz o
-  | a0 < 0 = Nothing
-  | otherwise = Just $ Object (convert $ Rec vx vy) (Rec (x + s) 0)
+ground o@(Object v p) =
+  if y p < 0
+    then Nothing
+    else Just $ Object (convert $ Rec vx vy) (Rec (px + s) 0)
   where
-    Object (Mag v a) (Rec x y) = horiz o
+    Object (Mag v a) (Rec px py) = horiz o
     vx = v * cos a
-    t = sqrt $ (2 * y) / g
+    t = sqrt $ (2 * py) / g
     s = vx * t
     vy = g * t
-ground (Object v l@Mag {}) = ground $ Object v (convert l)
-ground (Object v@Rec {} l) = ground $ Object (convert v) l
 
 time :: Double -> Object -> Object
 time t = move t (Rec 0 g)
