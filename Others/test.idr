@@ -14,6 +14,25 @@ Functor Omg where
     map f (One x) = One (f x)
     map f (Two x y) = Two (f x) (f y)
 
+O : Type
+S : Type -> Type
+
+intToNat : Int -> Type
+intToNat 0 = O
+intToNat n = S (intToNat (n-1))
+
+data Vec : Type -> (a : Type) -> Type where
+    Nil : Vec O a
+    Cons : a -> Vec n a -> Vec (S n) a
+
+helper : List a -> Type
+helper [] = O
+helper (_::n) = S (helper n)
+
+fromList : (n: List a) -> Vec (helper n) a
+fromList [] = Nil
+fromList (x::xs) = Cons x (fromList xs)
+
 mutual 
     mapSq : List Int -> List Int
     mapSq = mapList square
