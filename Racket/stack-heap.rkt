@@ -31,6 +31,7 @@
                  (for-each (lambda (x) (pop)) (from-to 0 sz))
                  (set! status #f)))
              ((eq? msg 'content) (stack-ref ptr))
+             ((eq? msg 'contents) (map (lambda (x) (stack-ref x)) (from-to ptr sz)))
              ((eq? msg 'tag) 'auto)
              ((eq? msg 'ptr) ptr)
              (else '()))
@@ -45,15 +46,20 @@
   (define status #t)
   (lambda (msg) 
     (if (eq? status #t)
-      (cond ((eq? msg 'content) (map (lambda (x) (vector-ref heap x)) memory))
+      (cond ((eq? msg 'content) (heap-ref ptr))
+            ((eq? msg 'contents) (map (lambda (x) (heap-ref x)) memory))
             ((eq? msg 'expire) (hfree pointer sz))
             ((eq? msg 'tag) 'dyn)
             ((eq? msg 'ptr) pointer)
-            (else 'expired!))
-    '())))
+            (else '()))
+    'expired!)))
 
 (define (write-heap ptr size content) 
-  (for-each (lambda (p) (vector-set! heap p content)) (from-to ptr (+ ptr size))))
+  (for-each 
+    (lambda (p) 
+      (if (eq? (vector-ref heap p) #f)
+        (error "not allocated memory!")
+        (vector-set! heap p content))) (from-to ptr (+ ptr size))))
 
 
 ;; simulate a scope (auto delete auto variables when out of scope)
@@ -75,4 +81,19 @@
 (define a (dyn-var a-ptr 2 233))
 (define b (dyn-var b-ptr 4 'hi))
 (define test-scope (scope (list a x y b)))
+
+;; try using heap and stack
+;; notice dyn var not cleaned up
+(define (add p q)
+  ;; intro vars, one auto, the other dynamic
+  (define p1 (auto-var p 1))
+  (define q1 (dyn-var (halloc 1) 1 q))
+  ;; add variables to current scope
+  (define spq (scope (list p1 q1)))
+  (begin
+    (define result (+ (p1 'content) (q1 'content)))
+    ;; cleanup when out of scope
+    (spq 'expire)
+    ;; return value p1 is null, p2 has something
+    (list result p1 q1)))
 
