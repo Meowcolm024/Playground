@@ -38,7 +38,7 @@
   (define (find-empty pos)  ;; find available memerory
     (if (vector-ref heap pos)
       (find-empty (+ pos 1))
-      (if (andmap (lambda (x) (eq? x #f)) (take (list-tail (vector->list heap) pos) size))
+      (if (foldr (lambda (x acc) (and (eq? x #f) acc)) #t (take (drop (vector->list heap) pos) size))
         (begin (for-each (lambda (p) (vector-set! heap p #t)) (from-to pos (+ pos size))) pos)
         (find-empty (+ pos 1)))))
   (find-empty 0)) ;; return the pointer to heap
@@ -148,6 +148,31 @@
             (else (error "unknown msg")))
       'destructed)))
 
+
+;; buffer overflow attack
+(define (demo)
+  (begin
+    ;; try to login with wrong username
+    ;; create vars in heap
+    (define username (dyn-var (halloc 4) 4 '(k n o w)))      ;; user input
+    (define good-username (dyn-var (halloc 4) 4 '(t r u e))) ;; correct one
+    ;; auth function
+    (define (login) (equal? (username 'contents) (good-username 'contents)))
+    ;; try login (should fail)
+    (show-memory)
+    (display "login: ")
+    (displayln (login))
+    ;; write new username, causing bufferoverflow
+    (heap-write (username 'ptr) 8 '(0 0 0 0 0 0 0 0))
+    ;; now should success
+    (show-memory)
+    (display "login: ")
+    (displayln (login))
+    ;; clean up memory
+    (username 'expire)
+    (good-username 'expire)
+    ))
+
 ;; demo
 (define (example)
   (begin
@@ -200,6 +225,3 @@
     (displayln ":: program ended")
   )
 )
-
-;; main
-(example)
