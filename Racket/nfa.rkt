@@ -8,7 +8,7 @@
 
 (define (do-automata automata inputs)
   (define (do-state state input)
-      (if (null? input) 
+      (if (null? input)
         state
         (append-map
           (lambda (s) (do-state s (cdr input)))
@@ -29,8 +29,7 @@
                  (if (= inp 0) '(q0 q1) '(q0)))
                 ((eq? st 'q1)
                  (if (= inp 0) '() '(q2)))
-                ;; accepting states
-                ((eq? st 'q2) '(q2)))
+                ((eq? st 'q2) '()))
           'fail))
     'q0
     '(q2)
@@ -64,3 +63,48 @@
         'q1
         '(q4 q8)
       )))
+
+;; math expr < > for ( )
+;; -3 * (6 + 3) / (13 - 4) + 56
+;; '(- 3 * < 6 + 3 > / < 1 3 - 4 > + 5 6)
+(define nfa-math
+  (let ((input-set '(0 1 2 3 4 5 6 7 8 9 + - * / < >)))
+    (list '(q0 q1 q2 q3 q4 q5)
+      input-set
+      (lambda (st inp)
+        (if (member inp input-set)
+            (cond ((eq? st 'q0)   ;; start
+                   (cond 
+                    ((number? inp) '(q4))
+                    ((eq? inp '-) '(q4))
+                    ((eq? inp '<) '(q2))
+                    (else '())))
+                  ((eq? st 'q1)  ;; out of bracket after op
+                   (cond 
+                    ((number? inp) '(q4)) 
+                    ((eq? inp '<) '(q2))
+                    (else '())))
+                  ((eq? st 'q2) ;; inside bracket before op
+                   (cond 
+                    ((number? inp) '(q2)) 
+                    ((member inp '(+ - * /)) '(q3))
+                    ((eq? inp '>) '(q5))
+                    (else '())))
+                  ((eq? st 'q3) ;; inside bracket after op
+                   (cond 
+                    ((number? inp) '(q2)) 
+                    ((eq? inp '>) '(q5))
+                    (else '())))
+                  ((eq? st 'q4) ;; out of bracket before op
+                   (cond 
+                    ((number? inp) '(q4)) 
+                    ((member inp '(+ - * /)) '(q1))
+                    (else '())))
+                  ((eq? st 'q5) ;; right after bracket
+                   (cond  
+                    ((member inp '(+ - * /)) '(q1))
+                    (else '()))))
+            'fail))
+      'q0
+      '(q0 q4 q5)
+  )))
