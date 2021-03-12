@@ -6,3 +6,8 @@ fib(N, Result) :-
     fib(N1, Result1), 
     fib(N2, Result2), 
     Result is Result1 + Result2.
+
+likes(taro, hanako).
+likes(hanako, taro).
+
+mutual(X, Y) :- likes(X, Y), likes(Y, X).
