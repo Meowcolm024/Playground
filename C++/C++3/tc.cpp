@@ -10,10 +10,11 @@ struct B : A
     int b;
 };
 
-int main() {
-    A* a = new A();
+int main()
+{
+    A *a = new A();
     a->a = 10;
-    B* pb = (B*) a;
+    B *pb = (B *)a;
     cout << pb->a << endl;
     cout << pb->b << endl;
     return 0;

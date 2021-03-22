@@ -1,23 +1,28 @@
+{-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE TypeOperators #-}
 {-# LANGUAGE RankNTypes #-}
 
-type (~>) f g = forall x. f x -> g x
+type (~>) f g = forall x . f x -> g x
 
 type ($|) f g = f g
 
 type Hi = Maybe $| Either String Int
 
-l2m :: [] ~> Maybe
-l2m [] = Nothing
-l2m (x:_) = Just x
+class NaturalTransformable f g where
+    trans :: f ~> g
 
-m2l :: Maybe ~> []
-m2l Nothing = []
-m2l (Just x) = [x]
+instance NaturalTransformable f f where
+    trans = id
 
-e2m :: Either a ~> Maybe
-e2m (Left _) = Nothing
-e2m (Right x) = Just x
+instance NaturalTransformable [] Maybe where
+    trans []      = Nothing
+    trans (x : _) = Just x
 
-e2l :: Either a ~> []
-e2l =  m2l . e2m
+instance NaturalTransformable Maybe [] where
+    trans Nothing  = []
+    trans (Just x) = [x]
+
+instance NaturalTransformable (Either a) Maybe where
+    trans (Left  _) = Nothing
+    trans (Right x) = Just x
