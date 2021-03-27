@@ -7,7 +7,10 @@ template <class T>
 class IShow
 {
 public:
-    virtual void show() const;
+    virtual void show() const
+    {
+        cout << "A humble IShow object :D" << endl;
+    }
 };
 
 template <class T>
