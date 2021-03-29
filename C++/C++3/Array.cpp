@@ -21,12 +21,19 @@ private:
     int len;
 
 public:
-    Array() : IShow<T>()
+    Array()
     {
         arr = nullptr;
         len = 0;
     }
-    Array(const T ar[], int le) : IShow<T>()
+    explicit Array(int le)
+    {
+        arr = new T[le];
+        for (int i = 0; i < le; i++)
+            arr[i] = nullptr;
+        len = le;
+    }
+    Array(const T ar[], int le)
     {
         arr = new T[le];
         for (int i = 0; i < le; i++)
