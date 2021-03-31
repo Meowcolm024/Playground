@@ -34,7 +34,7 @@ getHomeR = defaultLayout $ do
     toWidgetBody [julius|
             alert("omg!")
         |]
-    footer
+    page
 
 footer :: Widget
 footer = do
