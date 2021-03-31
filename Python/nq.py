@@ -15,4 +15,4 @@ def nQueens(n: int):
     placeQueens(list(range(n)), 0)
     return result
 
-print(nQueens(4))
+print(len(nQueens(12)))
