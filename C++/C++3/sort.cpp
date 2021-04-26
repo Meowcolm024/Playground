@@ -46,10 +46,34 @@ void ssort(int *xs, int len)
                 swap(xs[i], xs[j]);
 }
 
+int partition(int *xs, int left, int right)
+{
+    int l = left;
+    for (int i = left + 1; i < right; i++)
+    {
+        if (xs[i] < xs[left])
+        {
+            l++;
+            swap(xs[l], xs[i]);
+        }
+    }
+    swap(xs[l], xs[left]);
+    return l;
+}
+
+void qsort(int *xs, int left, int right)
+{
+    if (right - left <= 1)
+        return;
+    int p = partition(xs, left, right);
+    qsort(xs, left, p);
+    qsort(xs, p + 1, right);
+}
+
 int main()
 {
     int test[] = {5, 3, 8, 2, 0, 9, 1, 4, 7, 6};
-    msort(test, 0, 10);
+    qsort(test, 0, 10);
     for (auto i : test)
         cout << i << " ";
     cout << endl;

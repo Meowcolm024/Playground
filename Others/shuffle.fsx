@@ -19,3 +19,11 @@ let rec shuffle l =
         rmerge (shuffle ls) (shuffle rs)
 
 printfn "%A" (shuffle [ 1; 2; 3; 4; 5; 6 ])
+
+let rec search (xs: int []) v l r =
+    if l = r then
+        if xs.[l] = v then v else -1
+    else if v > xs.[(l + r) / 2] then
+        search xs v ((l + r) / 2 + 1) r
+    else
+        search xs v l ((l + r) / 2)
