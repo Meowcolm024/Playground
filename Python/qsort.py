@@ -7,10 +7,6 @@ class Node:
         return f'{self.value} {"" if self.next is None else self.next}'
 
 
-def cons(value, node: Node) -> Node:
-    return Node(value, node)
-
-
 def head(node: Node):
     return None if node is None else node.value
 
@@ -20,14 +16,7 @@ def tail(node: Node) -> Node:
 
 
 def append(xs: Node, ys: Node) -> Node:
-    return ys if xs is None else cons(head(xs), append(tail(xs), ys))
-
-
-def fromList(xs: list) -> Node:
-    if xs == []:
-        return None
-    else:
-        return cons(xs[0], fromList(xs[1:]))
+    return ys if xs is None else Node(head(xs), append(tail(xs), ys))
 
 
 def partition(f, l: Node, r: Node, xs: Node) -> (Node, Node):
@@ -37,19 +26,22 @@ def partition(f, l: Node, r: Node, xs: Node) -> (Node, Node):
         p = head(xs)
         y = tail(xs)
         if f(p):
-            return partition(f, cons(p, l), r, y)
+            return partition(f, Node(p, l), r, y)
         else:
-            return partition(f, l, cons(p, r), y)
+            return partition(f, l, Node(p, r), y)
 
 
 def qsort(xs: Node) -> Node:
     if xs is None:
         return None
     else:
-        p = head(xs)
-        y = tail(xs)
+        p = head(xs)    # pivot
+        y = tail(xs)    # the rest of the list
         (l, r) = partition(lambda t: t <= p, None, None, y)
         return append(append(qsort(l), Node(p)), qsort(r))
 
 
-print(qsort(fromList([4, 3, 6, 9, 8, 0, 7, 1, 2])))
+def fromList(xs: list) -> Node:
+    return None if xs == [] else Node(xs[0], fromList(xs[1:]))
+
+print(qsort(fromList([4, 3, 6, 9, 8, 0, 7, 1, 2, 5])))
